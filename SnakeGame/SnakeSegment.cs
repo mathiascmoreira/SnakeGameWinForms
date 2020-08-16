@@ -8,27 +8,23 @@ namespace SnakeGame
 {
     public class SnakeSegment
     {
-        public SnakeSegment(int line, int colunm)
+        public SnakeSegment(int line, int column)
         {
             Line = line;
-            Colunm = colunm;
-            PreviousLine = line;
-            PreviousColunm = colunm;
+            Column = column;
         }
 
-        private SnakeSegment previousSegment { get; set; }
+        public SnakeSegment PreviousSegment { get; set; }
 
         public int Line { get; set; }
-        public int Colunm { get; set; }
-        public int PreviousLine { get; set; }
-        public int PreviousColunm { get; set; }
-        //public void UpdatePosition(int line, colunm)
-        //{
+        public int Column { get; set; }
 
-        //}
+        internal void Move(int line, int colunm)
+        {
+            PreviousSegment?.Move(Line, Column);
 
-
-
-
+            Line = line;
+            Column = colunm;
+        }
     }
 }

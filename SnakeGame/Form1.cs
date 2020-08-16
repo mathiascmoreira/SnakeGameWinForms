@@ -1,109 +1,87 @@
-﻿using System.Drawing;
-using System.Text;
-using System.Timers;
+﻿using System.Linq;
+using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 
 namespace SnakeGame
 {
     public partial class Form1 : Form
     {
-        const char filledSquare = '◼';
-        const char emptySquare = '◻';
+        const int _lineCount = 40;
+        const int _colunmCount = 40;
 
-        private readonly string line;
-        private readonly Label[] lines;
+        private readonly Field _field;
 
-        private readonly Snake snake;
+        private List<Label> _lineControls;
 
-        private Direction currentDirection;
-
-
-
+        private System.Timers.Timer _timer;
 
         public Form1()
         {
-            const int lineCount = 40;
-            const int colunmCount = 40;
-
-            currentDirection = Direction.Right;
-
-            snake = new Snake();
-
-            var builder = new StringBuilder();
-            line = builder.Append(emptySquare, colunmCount).ToString();
-
             InitializeComponent();
 
-            lines = LoadLines(lineCount, colunmCount);
+            FillControls();
 
-            StartTimer();
+            _field = new Field(_lineCount, _colunmCount);
 
-            
+            StartGame();
         }
 
-        private void StartTimer()
+        private void FillControls()
         {
-            var timer = new System.Timers.Timer();
-            timer.Interval = 1000;
+            _lineControls = new List<Label>();
 
-            timer.SynchronizingObject = this;
-
-            timer.Elapsed += OnTimedEvent;
-
-            timer.AutoReset = true;
-
-            timer.Enabled = true;
-        }
-
-        private void OnTimedEvent(object sender, ElapsedEventArgs e)
-        {
-            UpdateField();
-        }
-
-        private Label[] LoadLines(int lineCount, int colunmCount)
-        {
-            var lines = new Label[lineCount];
-
-            for (int i = 0; i < lineCount; i++)
+            for (int i = 0; i < _lineCount; i++)
             {
-                var line = GetNewLine(i);
-                line.Text = this.line;
-
-                lines[i] = line;
-                gameField.Controls.Add(line);
-
+                _lineControls.Add(GetNewLabel(i));
             }
 
-            return lines;
+            gameFieldPanel.Controls.AddRange(_lineControls.ToArray());
+        }
+
+        private void StartGame()
+        {
+            _timer = new System.Timers.Timer
+            {
+                Interval = 250,
+                SynchronizingObject = this,
+                AutoReset = true,
+                Enabled = true
+            };
+
+            _timer.Elapsed += (sender, e) => UpdateField();
+        }
+
+        private void PauseGame()
+        {
+            _timer.Stop();
+            _timer.Dispose();
         }
 
         private void UpdateField()
         {
-            snake.Move(currentDirection);
+            _field.MoveSnack();
 
-            foreach (var segment in snake.Segments)
-            {
-                var newLine = lines[segment.Line];
-                var previousLine = lines[segment.PreviousLine];
-
-                newLine.Text = newLine.Text.Remove(segment.Colunm, 1).Insert(segment.Colunm, filledSquare+"");
-                previousLine.Text = previousLine.Text.Remove(segment.PreviousColunm, 1).Insert(segment.PreviousColunm, emptySquare+"");
-            }
+            ShowField();
         }
 
-        private Label GetNewLine(int lineNumber)
+        private void ShowField()
         {
-            var newLine = new Label
+            foreach (var item in _field.FieldCaracters.Select((line, index) => new { index, line }))
+            {
+                _lineControls.ElementAt(item.index).Text = item.line;
+            }
+        }
+       
+        private Label GetNewLabel(int lineNumber)
+        {
+            return new Label
             {
                 AutoSize = true,
                 Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0),
-                Location = new Point(0, lineNumber*12),
+                Location = new Point(0, lineNumber * 12),
                 Name = $"label{lineNumber}",
-
             };
-
-            return newLine;
-
         }
 
         private void Form1_KeyDown(object sender, KeyEventArgs e)
@@ -111,20 +89,18 @@ namespace SnakeGame
             switch (e.KeyCode)
             {
                 case Keys.Up:
-                    currentDirection = Direction.Up;
+                    _field.MovingDirection(Direction.Up);
                     break;
                 case Keys.Down:
-                    currentDirection = Direction.Down;
+                    _field.MovingDirection(Direction.Down);
                     break;
                 case Keys.Left:
-                    currentDirection = Direction.Left;
+                    _field.MovingDirection(Direction.Left);
                     break;
                 case Keys.Right:
-                    currentDirection = Direction.Right;
+                    _field.MovingDirection(Direction.Right);
                     break;
             }
         }
     }
-
-
 }

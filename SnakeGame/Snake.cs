@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnakeGame
 {
@@ -12,33 +10,49 @@ namespace SnakeGame
         {
             Head = new SnakeSegment(0, 0);
 
-            Segments = new List<SnakeSegment> { Head };
+            AllSegments = new List<SnakeSegment> { Head };
+
+            MovingDirection = Direction.Right;
         }
 
         public SnakeSegment Head { get; set; }
-        public List<SnakeSegment> Segments { get; set; }
+        public List<SnakeSegment> AllSegments { get; set; }
+        public Direction MovingDirection { get; set; }
 
-        public void Move(Direction direction)
+        public SnakeSegment GetNextPosition()
         {
-            switch (direction)
+            switch (MovingDirection)
             {
                 case Direction.Up:
-                    Head.PreviousLine = Head.Line--;
-                    Head.PreviousColunm = Head.Colunm;
-                    break;
+                    return new SnakeSegment(Head.Line - 1, Head.Column);
                 case Direction.Down:
-                    Head.PreviousLine = Head.Line++;
-                    Head.PreviousColunm = Head.Colunm;
-                    break;
+                    return new SnakeSegment(Head.Line + 1, Head.Column);
                 case Direction.Left:
-                    Head.PreviousColunm = Head.Colunm--;
-                    Head.PreviousLine = Head.Line;
-                    break;
+                    return new SnakeSegment(Head.Line, Head.Column - 1);
                 case Direction.Right:
-                    Head.PreviousColunm = Head.Colunm++;
-                    Head.PreviousLine = Head.Line;
-                    break;
+                    return new SnakeSegment(Head.Line, Head.Column + 1);
+                default:
+                    return new SnakeSegment(Head.Line, Head.Column + 1);
             }
+        }
+
+        public void Move()
+        {
+            var nextPosition = GetNextPosition();
+
+            Head.Move(nextPosition.Line, nextPosition.Column);
+        }
+
+        internal void UpdateHead(SnakeSegment newHead)
+        {
+            newHead.PreviousSegment = Head;
+
+            Head = newHead;
+        }
+
+        public bool HasSegmentIn(int line, int column)
+        {
+            return AllSegments.Any(c => c.Line == line && c.Column == column);
         }
     }
 }

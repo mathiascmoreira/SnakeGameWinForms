@@ -28,23 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.gameField = new System.Windows.Forms.Panel();
+            this.gameFieldPanel = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
-            // gameField
+            // gameFieldPanel
             // 
-            this.gameField.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.gameField.Location = new System.Drawing.Point(117, 81);
-            this.gameField.Name = "gameField";
-            this.gameField.Size = new System.Drawing.Size(724, 495);
-            this.gameField.TabIndex = 70;
+            this.gameFieldPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.gameFieldPanel.Location = new System.Drawing.Point(88, 66);
+            this.gameFieldPanel.Margin = new System.Windows.Forms.Padding(2);
+            this.gameFieldPanel.Name = "gameFieldPanel";
+            this.gameFieldPanel.Size = new System.Drawing.Size(544, 559);
+            this.gameFieldPanel.TabIndex = 70;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1141, 669);
-            this.Controls.Add(this.gameField);
+            this.ClientSize = new System.Drawing.Size(975, 684);
+            this.Controls.Add(this.gameFieldPanel);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Snake Game";
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
@@ -53,7 +55,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.Panel gameField;
+        private System.Windows.Forms.Panel gameFieldPanel;
     }
 }
 
