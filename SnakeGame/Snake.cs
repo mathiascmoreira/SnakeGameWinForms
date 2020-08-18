@@ -36,16 +36,30 @@ namespace SnakeGame
             }
         }
 
-        public void Move()
+        public void Move(int maxLine, int maxColumn)
         {
             var nextPosition = GetNextPosition();
+
+            CheckIfNextPositionIsValid(nextPosition, maxLine, maxColumn);
 
             Head.Move(nextPosition.Line, nextPosition.Column);
         }
 
-        internal void UpdateHead(SnakeSegment newHead)
+        private void CheckIfNextPositionIsValid(SnakeSegment nextPosition, int maxLine, int maxColumn)
+        {
+            if (nextPosition.Line >= maxLine || nextPosition.Column >= maxColumn || TouchItself(nextPosition))
+                throw new Exception("Game Over");
+        }
+
+        private bool TouchItself(SnakeSegment nextPosition)
+        {
+            return AllSegments.Any(c => nextPosition.Line == c.Line && nextPosition.Column == c.Column && c != Head.PreviousSegment);
+        }
+
+        public void UpdateHead(SnakeSegment newHead)
         {
             newHead.PreviousSegment = Head;
+            AllSegments.Add(newHead);
 
             Head = newHead;
         }

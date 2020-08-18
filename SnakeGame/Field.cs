@@ -33,6 +33,15 @@ namespace SnakeGame
 
         public void MoveSnack()
         {
+            CheckIfTheSnakeGotTheFood();
+
+            _snake.Move(_lineCount, _columnCount);
+
+            FillField();
+        }
+
+        private void CheckIfTheSnakeGotTheFood()
+        {
             var nextPosition = _snake.GetNextPosition();
 
             if (nextPosition.Line == _food.Line && nextPosition.Column == _food.Column)
@@ -40,15 +49,21 @@ namespace SnakeGame
                 _snake.UpdateHead(_food);
                 _food = GetNewFoodPosition();
             }
-
-            _snake.Move();
-
-            FillField();
         }
 
         public void MovingDirection(Direction direction)
         {
+            if (IsOposite(_snake.MovingDirection, direction))
+                return;
+
             _snake.MovingDirection = direction;
+        }
+
+        private bool IsOposite(Direction currentDirection, Direction newDirection)
+        {
+            return (currentDirection == Direction.Down && newDirection == Direction.Up || currentDirection == Direction.Up && newDirection == Direction.Down) ||
+                (currentDirection == Direction.Left && newDirection == Direction.Right || currentDirection == Direction.Right && newDirection == Direction.Left);
+
         }
 
         private void FillField()
@@ -93,13 +108,13 @@ namespace SnakeGame
 
         private SnakeSegment GetNewFoodPosition()
         {
-            var line = new Random().Next(0, _lineCount);
-            var column = new Random().Next(0, _columnCount);
+            var line = new Random().Next(1, _lineCount - 1);
+            var column = new Random().Next(1, _columnCount - 1);
 
             while (_snake.HasSegmentIn(line, column))
             {
-                line = new Random().Next(0, _lineCount);
-                column = new Random().Next(0, _columnCount);
+                line = new Random().Next(1, _lineCount - 1);
+                column = new Random().Next(1, _columnCount -1);
             }
 
             return new SnakeSegment(line, column);

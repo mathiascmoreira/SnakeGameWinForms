@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System;
 
 namespace SnakeGame
 {
@@ -36,7 +37,9 @@ namespace SnakeGame
                 _lineControls.Add(GetNewLabel(i));
             }
 
-            gameFieldPanel.Controls.AddRange(_lineControls.ToArray());
+            panel.Controls.AddRange(_lineControls.ToArray());
+
+            
         }
 
         private void StartGame()
@@ -60,9 +63,17 @@ namespace SnakeGame
 
         private void UpdateField()
         {
-            _field.MoveSnack();
+            try
+            {
+                _field.MoveSnack();
 
-            ShowField();
+                ShowField();
+            }
+            catch(Exception ex)
+            {
+                 gameOverLabel.Visible = true;
+            }
+
         }
 
         private void ShowField()
@@ -71,6 +82,8 @@ namespace SnakeGame
             {
                 _lineControls.ElementAt(item.index).Text = item.line;
             }
+
+            
         }
        
         private Label GetNewLabel(int lineNumber)
@@ -78,6 +91,8 @@ namespace SnakeGame
             return new Label
             {
                 AutoSize = true,
+                Dock = DockStyle.None,
+                Margin = new Padding(0),
                 Font = new Font("Microsoft Sans Serif", 10.8F, FontStyle.Regular, GraphicsUnit.Point, 0),
                 Location = new Point(0, lineNumber * 12),
                 Name = $"label{lineNumber}",
@@ -101,6 +116,23 @@ namespace SnakeGame
                     _field.MovingDirection(Direction.Right);
                     break;
             }
+        }
+
+       
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+
         }
     }
 }
