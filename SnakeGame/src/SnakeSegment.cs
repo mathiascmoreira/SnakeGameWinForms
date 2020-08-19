@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnakeGame
 {
@@ -19,12 +15,17 @@ namespace SnakeGame
         public int Line { get; set; }
         public int Column { get; set; }
 
-        internal void Move(int line, int colunm)
+        public void Move(SnakeSegment nextPosition)
         {
-            PreviousSegment?.Move(Line, Column);
+            PreviousSegment?.Move(this);
 
-            Line = line;
-            Column = colunm;
+            Update(nextPosition);
+        }
+
+        public void Update(SnakeSegment nextPosition)
+        {
+            Line = nextPosition.Line;
+            Column = nextPosition.Column;
         }
     }
 }
